@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+const dotEnv = require('dotenv')
+dotEnv.config();
 const mongoose = require('mongoose')
 const URL = process.env.URL;
 const session = require('express-session');
@@ -19,7 +21,7 @@ const Cart = require('./models/cart')
 // const URL = 'mongodb+srv://abdullohibrohimov85:zsYi91VEPhXS99Cn@cluster0.0ijpncy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0x'
 // const session = require('express-session');
 // const mbSession = require('connect-mongodb-session')(session)
-const PORT =  process.env.POST;
+const PORT =  process.env.PORT;
 async function start() {
   try {
     await mongoose.connect(URL);
