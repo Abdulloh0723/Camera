@@ -1,0 +1,48 @@
+
+
+{{#if category}}
+
+  <form action="/category/add" method="POST">
+    <h2 class="text-center" style="color: #858796;" >Categorya  qo'shish</h2>
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label" style="color: #858796;">Nomi</label>
+    <input name="nomi" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required style="color: #858796;">
+   
+  </div>
+  <button type="submit" class="btn btn-primary">Saqlash</button>
+</form>
+
+
+
+
+    <table class="table table-hover" style="color: #858796;">
+  <thead>
+    <tr>
+      <th scope="col" style="color: #858796;">№</th>
+      <th scope="col" style="color: #858796;">Nomi</th>
+   
+     
+     
+    </tr>
+  </thead>
+  <tbody>
+    {{#each category}}
+    <tr>
+      <th scope="row" style="color: #858796;">{{incr @index}}</th>
+      <td style="color: #858796;">{{nomi}}</td>
+      {{!-- <td>{{turi}}</td>
+      <td>{{narxi}}</td> --}}
+      
+    <td><a href="/category/{{id}}" class="btn btn-primary">Tahrirlash</a></td>
+      
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+
+
+{{/if}}
+
+
+

@@ -1,0 +1,38 @@
+<form action="/login" style="width: 80%;" method="POST" class="form-2">
+
+<h2 class="text-center" style="color: #858796;" >Kirish</h2>
+     {{#if error}}
+       <div class="alert alert-danger w-50" role="alert" id="error">
+  {{error}}
+</div>  
+{{/if}}
+{{#if PasswordError}}
+       <div class="alert alert-danger w-50" role="alert" id="success">
+  {{PasswordError}}
+</div>  
+{{/if}}
+    
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label" style="color: #858796;">Login</label>
+    <input name="login" type="text" class="form-control" style="color: #858796;"  id="exampleInputEmail1" aria-describedby="emailHelp" required style="color: #858796;">
+   
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label" style="color: #858796;">Parol</label>
+    <input name="parol" type="password" class="form-control" style="color: #858796;" id="exampleInputEmail1" aria-describedby="emailHelp" required style="color: #858796;">
+   
+  </div>
+  <button type="submit" class="btn btn-primary">Kirish</button>
+
+</form>
+
+
+<script>
+    const error = document.querySelectorAll('.alert')
+
+    error.forEach((item)=>{
+        setTimeout(()=>{
+            item.style.display = 'none'
+        },2500)
+    })
+</script>

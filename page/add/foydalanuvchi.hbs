@@ -1,0 +1,83 @@
+
+<form action="/qushish/add" method="POST">
+    <h2 class="text-center" style="color: #858796;" >Foydalanuvchi  qo'shish</h2>
+ {{#if error}}
+       <div class="alert alert-danger w-20" role="alert" id="error">
+  {{error}}
+</div>  
+{{/if}}
+{{#if success}}
+       <div class="alert alert-success w-20" role="alert" id="success">
+  {{success}}
+</div>  
+{{/if}}
+   <div class="mb-3"
+        <label for="exampleFormControlInput1" class="form-label" style="color: #858796;">Login</label>
+        <input
+          type="text"
+          class="form-control"
+          id="exampleFormControlInput1"
+          placeholder="Login"
+          name="login"
+          style="margin-top: 8px; color: #858796;"
+          
+          required
+        />
+         <div class="mb-3">
+        <label for="exampleFormControlInput2" class="form-label">Parol</label>
+        <input
+          type="password"
+          class="form-control"
+          id="exampleFormControlInput2"
+          placeholder="Parol"
+          name="parol"
+          required
+          style="color: #858796;"
+        />
+      </div>
+  <button type="submit" class="btn btn-primary">Saqlash</button>
+</form>
+
+      <div class="container2 " style="">
+  <div class="row">
+    <div class="col-lg-10">
+      <table class="table">
+        <thead>
+          <tr>
+            <td style="color: #858796;">№</td>
+            <td style="color: #858796;">Login</td>
+            <td style="color: #858796;">Tahrirlash</td>
+          </tr>
+        </thead>
+        <tbody>
+          
+        {{#if foydalanuvchi.length}}
+          {{#each foydalanuvchi}}
+            <tr>
+            <td style="color: #858796;">{{incr @index}}</td>
+            <td style="color: #858796;">{{login}}</td>
+            {{!-- <td>{{parol}}</td> --}}
+            <td>
+              <a href="qushish/{{id}}" class="btn btn-success">Tahrirlash</a>
+            </td>
+          </tr>
+          {{/each}}
+          {{else}}
+            Foydalanuvchi qo'shilmagan
+          {{/if}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<script>
+    const error = document.querySelectorAll('.alert')
+
+    error.forEach((item)=>{
+        setTimeout(()=>{
+            item.style.display = 'none'
+        },2500)
+    })
+</script>

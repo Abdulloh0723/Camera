@@ -1,0 +1,647 @@
+ {{!-- <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+
+<div class="container">
+        <div class="filter mt-3"></div>
+
+        
+
+        <div id="cartModal" style="display:block; margin-top:30px">
+{{#each cart}}
+
+ <h2>Tovarlar</h2>
+ {{#each items}}
+            <div id="cartItems"></div>
+            <h3>{{product.nomi}}</h3>
+{{/each}}
+            <p>Umumiy narx: <span id="totalPrice">{{product.narxi}}</span> so'm</p>
+            <button id="printBtn" class="btn btn-primary">Chop etish</button>
+
+{{/each}}
+
+           
+        </div>
+    </div>
+<div class="row row-cols-1 row-cols-md-3 g-4 mt-5" id="productContainer"></div> 
+   
+
+
+ <script>
+document.addEventListener('DOMContentLoaded', async () => {
+   let cart = {}
+    const productContainer = document.getElementById('productContainer');
+    const cartModal = document.querySelector('#cartModal');
+    const sum = 12700; // Exchange rate or multiplier
+
+    // Fetch products from the server
+    const response = await fetch('/api/products');
+    const mahsulot = await response.json();
+    
+
+    // Fetch categories from the server
+    const categoryResponse = await fetch('/api/category');
+    const categories = await categoryResponse.json();
+
+
+    const cartResponse = await fetch('/api/cart');
+    const cart1 = await cartResponse.json();
+    
+    // Display filter options
+    const filter = document.querySelector('.filter');
+    const options = categories.map(item => `<option value="${item.nomi}">${item.nomi}</option>`).join('');
+    const filterElement = document.createElement('div');
+    filterElement.innerHTML = `
+        <form id="filter-form">
+            <label for="category">Filter by category:</label>
+            <select name="category" id="category" class="form-control">
+                <option value="">All</option>
+                ${options}
+            </select>
+        </form>     
+    `;
+    filter.appendChild(filterElement);
+
+    // Display products
+    mahsulot.forEach(product => {
+        const productElement = document.createElement('div');
+        productElement.classList.add('col');
+        productElement.setAttribute('data-category', product.category.nomi);
+        productElement.innerHTML = `
+            <div class="card h-100">
+                <img src="images/cameralar/${product.img}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">${product.nomi}</h5>
+                    <p class="card-text">${product.narxi * sum} so'm</p>
+                   
+                    <form action="/cart/add" method="POST">
+                        <input type="hidden" value="${product._id}" name="productId" />
+                        <button class="btn btn-primary add-to-cart productId" data-id="">Korzinkaga</button>
+                        <button>Korzinkaga qo'shish</button>
+                    </form>
+                </div>
+            </div>
+        `;
+        productContainer.appendChild(productElement);
+    });
+
+    // Filter products by category
+    document.getElementById('category').addEventListener('change', function() {
+        const selectedCategory = this.value;
+        const products = document.querySelectorAll('#productContainer .col');
+        products.forEach(product => {
+            if (selectedCategory === '' || product.getAttribute('data-category') === selectedCategory) {
+                product.classList.remove('hidden');
+            } else {
+                product.classList.add('hidden');
+            }
+        });
+    });
+
+    // Add to cart functionality
+    productContainer.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('add-to-cart')) {
+            const id = e.target.getAttribute('data-id');
+            const productElement = e.target.closest('.card-body');
+            const name = productElement.querySelector('.card-title').innerText;
+            const priceText = productElement.querySelector('.card-text').innerText;
+            const price = parseFloat(priceText.replace(/\D/g, '')); // Extract number from string
+
+            // Check if product is already in cart
+            if (cart[id]) {
+                cart[id].quantity++;
+            } else {
+                cart[id] = { name, price, quantity: 1 };
+            }
+
+
+            updateCart();
+        }
+    });
+
+    // Update the cart UI
+    function updateCart() {
+        const cartItems = document.getElementById('cartItems');
+        cartItems.innerHTML = ''; // Clear the cart content
+        let totalPrice = 0;
+
+        // Loop through the cart and create HTML elements for each item
+        
+ 
+
+ 
+
+        // Update the total price in the cart
+        document.getElementById('totalPrice').innerText = totalPrice;
+
+        // Add event listeners to increase/decrease quantity buttons
+        document.querySelectorAll('.increase-quantity').forEach(button => {
+            button.addEventListener('click', async () => {
+                const id = button.getAttribute('data-id');
+                cart[id].quantity++;
+
+             
+                updateCart();
+            });
+        });
+
+        document.querySelectorAll('.decrease-quantity').forEach(button => {
+            button.addEventListener('click', async () => {
+                const id = button.getAttribute('data-id');
+                if (cart[id].quantity > 1) {
+                    cart[id].quantity--;
+                } else {
+                    delete cart[id];
+                }
+
+                // Update cart on server
+                
+                updateCart();
+            });
+        });
+    }
+
+    // Print the cart
+    document.getElementById('printBtn').addEventListener('click', () => {
+        window.print();
+    });
+    cart1.forEach((cart) =>{
+    console.log(cart.items)
+ })
+});
+</script>
+             --}}
+{{!-- <script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const productContainer = document.getElementById('productContainer');
+    const cartModal = document.querySelector('#cartModal');
+    const cartItems = document.getElementById('cartItems');
+    const totalPriceElement = document.getElementById('totalPrice');
+    let cart = {};
+    let sum = 12700
+
+    // Sahifa yuklanganda savat ma'lumotlarini olish
+    const cartResponse = await fetch('/api/cart');
+    cart = await cartResponse.json();
+    updateCart();
+
+    // Mahsulotlarni ko'rsatish
+    const response = await fetch('/api/products');
+    const mahsulot = await response.json();
+
+    mahsulot.forEach(product => {
+        const productElement = document.createElement('div');
+        productElement.classList.add('col');
+        productElement.innerHTML = `
+            <div class="card h-100">
+                <img src="images/cameralar/${product.img}" class="card-img-top" alt="${product.nomi}">
+                <div class="card-body">
+                    <h5 class="card-title">${product.nomi}</h5>
+                    <p class="card-text">${product.narxi * sum } so'm</p>
+                    <button class="btn btn-primary add-to-cart" data-id="${product._id}">Korzinkaga qo'shish</button>
+                </div>
+            </div>
+        `;
+        productContainer.appendChild(productElement);
+    });
+
+    // Savatga mahsulot qo'shish
+    productContainer.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('add-to-cart')) {
+            const id = e.target.getAttribute('data-id');
+            const name = e.target.closest('.card-body').querySelector('.card-title').innerText;
+            const price = parseFloat(e.target.closest('.card-body').querySelector('.card-text').innerText);
+
+            if (cart[id]) {
+                cart[id].quantity++;
+            } else {
+                cart[id] = { name, price, quantity: 1 };
+            }
+
+            await fetch('/api/cart', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId: id, quantity: cart[id].quantity }),
+            });
+
+            updateCart();
+        }
+    });
+
+    // Savatni yangilash
+    function updateCart() {
+        cartItems.innerHTML = '';
+        let totalPrice = 0;
+
+        Object.keys(cart).forEach(id => {
+            const item = cart[id];
+            const itemElement = document.createElement('div');
+            itemElement.innerHTML = `
+                <div class="align-items-center mb-2">
+                    <p>${item.name} - ${item.price * sum} so'm x ${item.quantity}</p>
+                    <button class="btn btn-outline-success btn-sm increase-quantity" data-id="${id}">+</button>
+                    <button class="btn btn-outline-danger btn-sm decrease-quantity" data-id="${id}">-</button>
+                </div>
+            `;
+            cartItems.appendChild(itemElement);
+            totalPrice += item.price * item.quantity;
+        });
+
+        totalPriceElement.innerText = totalPrice;
+        cartModal.style.display = 'block';
+    }
+
+    // Mahsulot miqdorini oshirish yoki kamaytirish
+    cartItems.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('increase-quantity')) {
+            const id = e.target.getAttribute('data-id');
+            cart[id].quantity++;
+            await updateCartItem(id);
+        } else if (e.target.classList.contains('decrease-quantity')) {
+            const id = e.target.getAttribute('data-id');
+            if (cart[id].quantity > 1) {
+                cart[id].quantity--;
+            } else {
+                delete cart[id];
+            }
+            await updateCartItem(id);
+        }
+        updateCart();
+    });
+
+    async function updateCartItem(id) {
+        await fetch('/api/cart', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(cart[id] || { quantity: 0 }),
+        });
+    }
+});
+</script> --}}
+
+
+
+{{!-- <script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const cart = {};
+    const productContainer = document.getElementById('productContainer');
+    const cartModal = document.querySelector('#cartModal');
+    const totalPriceElement = document.getElementById('totalPrice');
+    const cartItems = document.getElementById('cartItems');
+
+    // Sahifa yuklanganda korzinka ma'lumotlarini olish
+    const cartResponse = await fetch('/api/cart');
+    const cartData = await cartResponse.json();
+    const existingCart = cartData ? cartData.items : [];
+    existingCart.forEach(item => {
+        cart[item.mahsulotId._id] = { 
+            name: item.mahsulotId.nomi, 
+            price: item.mahsulotId.narxi, 
+            quantity: item.quantity 
+        };
+    });
+    updateCart();
+
+    // Mahsulotlarni ko'rsatish
+    const productResponse = await fetch('/api/products');
+    const mahsulot = await productResponse.json();
+
+    mahsulot.forEach(product => {
+        const productElement = document.createElement('div');
+        productElement.classList.add('col');
+        productElement.innerHTML = `
+            <div class="card h-100">
+                <img src="images/cameralar/${product.img}" class="card-img-top" alt="${product.nomi}">
+                <div class="card-body">
+                    <h5 class="card-title">${product.nomi}</h5>
+                    <p class="card-text">${product.narxi} so'm</p>
+                    <button class="btn btn-primary add-to-cart" data-id="${product._id}">Korzinkaga qo'shish</button>
+                </div>
+            </div>
+        `;
+        productContainer.appendChild(productElement);
+    });
+
+    // Korzinkaga mahsulot qo'shish
+    productContainer.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('add-to-cart')) {
+            const id = e.target.getAttribute('data-id');
+
+            const response = await fetch('/api/cart', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mahsulotId: id, quantity: 1 }),
+            });
+
+            const data = await response.json();
+
+            // Korzinkani yangilash
+            const product = mahsulot.find(item => item._id === id);
+            if (cart[id]) {
+                cart[id].quantity++;
+            } else {
+                cart[id] = { name: product.nomi, price: product.narxi, quantity: 1 };
+            }
+
+            updateCart();
+        }
+    });
+
+    // Korzinkani yangilash
+    function updateCart() {
+        cartItems.innerHTML = '';
+        let totalPrice = 0;
+
+        Object.keys(cart).forEach(id => {
+            const item = cart[id];
+            const itemElement = document.createElement('div');
+            itemElement.innerHTML = `
+                <div class="align-items-center mb-2">
+                    <p>${item.name} - ${item.price} so'm x ${item.quantity}</p>
+                    <button class="btn btn-outline-success btn-sm increase-quantity" data-id="${id}">+</button>
+                    <button class="btn btn-outline-danger btn-sm decrease-quantity" data-id="${id}">-</button>
+                </div>
+            `;
+            cartItems.appendChild(itemElement);
+            totalPrice += item.price * item.quantity;
+        });
+
+        totalPriceElement.innerText = totalPrice;
+        cartModal.style.display = 'block';
+    }
+});
+
+</script> --}}
+{{!-- 
+<script>
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const cart = {};
+    const productContainer = document.getElementById('productContainer');
+    const cartModal = document.querySelector('#cartModal');
+    let sum = 12700;
+
+    // Mahsulotlarni serverdan olish
+    const response = await fetch('/api/products');
+    const mahsulot = await response.json();
+
+    // Mahsulotlarni ko'rsatish
+    mahsulot.forEach(product => {
+        const productElement = document.createElement('div');
+        productElement.classList.add('col');
+        productElement.setAttribute('data-category', product.category.nomi);
+        productElement.innerHTML = `
+            <div class="card h-100">
+                <img src="images/cameralar/${product.img}" class="card-img-top" alt="${product.nomi}">
+                <div class="card-body">
+                    <h5 class="card-title">${product.nomi}</h5>
+                    <p class="card-text">${product.narxi * sum} so'm</p>
+                    <button class="btn btn-primary add-to-cart" data-id="${product._id}">Korinka</button>
+                </div>
+            </div>
+        `;
+        productContainer.appendChild(productElement);
+    });
+
+    // Korzinkaga mahsulot qo'shish
+    productContainer.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('add-to-cart')) {
+            const id = e.target.getAttribute('data-id');
+
+            await fetch('/api/cart/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId: id}),
+            });
+
+            updateCart();
+        }
+    });
+
+    function updateCart() {
+        // Korzinkani yangilash uchun kod
+    }
+});
+</script> --}}
+
+
+
+<style>
+    .hidden {
+        display: none;
+    }
+    
+</style>
+
+<div class="container main">
+    <div class="filter mt-3 mb-3"></div>
+<div id="table">
+    <table class="table1 table table-hover" >
+        <thead>
+            <th>Nomi</th>
+                    <th>Rasmi</th>
+                    <th>Narxi</th>
+                    <th>Soni</th>
+                    <th>Jami</th>
+                    <th>O'chirish</th>
+        </thead>
+
+     <tbody id="cartTableBody"></tbody> 
+       
+    </table>
+</div>
+    <div id="cartModal" >
+        <h2>Tovarlar</h2>
+        <div id="cartItems"></div>
+        <p class="mt-2"> <b>Umumiy narx:</b> <span id="totalPrice">0</span> so'm</p>
+        <button id="printBtn" class="btn btn-primary">Chop etish</button>
+        
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4 mt-5" id="productContainer"></div> 
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const productContainer = document.getElementById('productContainer');
+    const cartModal = document.querySelector('#cartModal');
+    const sum = 12700; // Exchange rate or multiplier
+
+    // Fetch products from the server
+    const response = await fetch('/api/products');
+    const mahsulot = await response.json();
+    
+    // Fetch categories from the server
+    const categoryResponse = await fetch('/api/category');
+    const categories = await categoryResponse.json();
+
+    const cartResponse = await fetch('/api/cart');
+    const cart1 = await cartResponse.json();
+    
+    // Display filter options
+    const filter = document.querySelector('.filter');
+    const options = categories.map(item => `<option value="${item.nomi}">${item.nomi}</option>`).join('');
+    const filterElement = document.createElement('div');
+    filterElement.innerHTML = `
+        <form id="filter-form">
+            <label for="category">Filter by category:</label>
+            <select name="category" id="category" class="form-control">
+                <option value="">All</option>
+                ${options}
+            </select>
+        </form>     
+    `;
+    filter.appendChild(filterElement);
+
+    // Display products
+    mahsulot.forEach(product => {
+        const productElement = document.createElement('div');
+        productElement.classList.add('col');
+        productElement.setAttribute('data-category', product.category.nomi);
+        productElement.innerHTML = `
+            <div class="card h-100">
+                <img src="images/cameralar/${product.img}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">${product.nomi}</h5>
+                    <p class="card-text">${product.narxi * sum} so'm</p>
+                   <form action="/cart/add" method="POST">
+                        <input type="hidden" value="${product._id}" name="productId" />
+                        <button class="btn btn-primary add-to-cart productId" data-id="">Korzinkaga</button>
+                        
+                    </form>
+                </div>
+            </div>
+        `;
+        productContainer.appendChild(productElement);
+        
+    });
+
+    // Filter products by category
+    document.getElementById('category').addEventListener('change', function() {
+        const selectedCategory = this.value;
+        const products = document.querySelectorAll('#productContainer .col');
+        products.forEach(product => {
+            if (selectedCategory === '' || product.getAttribute('data-category') === selectedCategory) {
+                product.classList.remove('hidden');
+            } else {
+                product.classList.add('hidden');
+            }
+        });
+    });
+
+    // Add to cart functionality
+    productContainer.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('add-to-cart')) {
+            const id = e.target.getAttribute('data-id');
+            const response = await fetch(`/api/cart/add/${id}`, { method: 'POST' });
+            const updatedCart = await response.json();
+            updateCart(updatedCart);
+        }
+    });
+
+    // Update the cart UI
+    function updateCart(cart) {
+        const cartItems = document.getElementById('cartTableBody');
+         // Clear the cart content
+        let totalPrice = 0;
+
+        // Loop through the cart and create HTML elements for each item
+      
+            const item = cart
+            item.forEach((item3) =>{
+               console.log(item3)
+                totalPrice += item3.product.narxi * item3.quantity;
+             const productElement1 = document.createElement('tr');
+             productElement1.classList.add('child');
+             productElement1.innerHTML += `
+            
+           
+                    <td>${item3.product.nomi}</td>
+                        <td><img src="../images/cameralar/${item3.product.img}" alt="" style="width: 100px;"></td>
+                        <td>${item3.product.narxi * sum}</td>
+                        <td> <form action="/cart/update" method="POST" style="display:inline;">
+                <input type="hidden" name="productId" value="${item3.product._id}">
+                <input type="hidden" name="action" value="decrement">
+                <button type="submit" class="minus btn btn-danger">-</button>
+            </form>
+
+            <span class="quantity">${item3.quantity}</span>
+
+            <form action="/cart/update" method="POST" style="display:inline;">
+                <input type="hidden" name="productId" value="${item3.product._id}">
+                <input type="hidden" name="action" value="increment">
+                <button type="submit" class="plus btn btn-success">+</button>
+            </form>
+      
+</td>
+                        <td>${item3.quantity * item3.product.narxi * sum} so'm</td>
+                        <td><form action="/cart/delete" method="POST">
+                 <input name="productId" type="hidden" value="${item3.product._id}">
+                 <td><button class="btn btn-danger my-4">O'chirish</button></td>
+            </form></td>
+                  
+                    
+            `;
+
+            cartItems.appendChild(productElement1);
+          
+
+            })
+            
+        
+
+        // Update the total price in the cart
+        document.getElementById('totalPrice').innerText = totalPrice * sum;
+
+        // Add event listeners to increase/decrease quantity buttons
+        document.querySelectorAll('.increase-quantity').forEach(button => {
+            button.addEventListener('click', async () => {
+                const id = button.getAttribute('data-id');
+                const response = await fetch(`/api/cart/increase/${id}`, { method: 'POST' });
+                const updatedCart = await response.json();
+                updateCart(updatedCart);
+            });
+        });
+
+        document.querySelectorAll('.decrease-quantity').forEach(button => {
+            button.addEventListener('click', async () => {
+                const id = button.getAttribute('data-id');
+                const response = await fetch(`/api/cart/decrease/${id}`, { method: 'POST' });
+                const updatedCart = await response.json();
+                updateCart(updatedCart);
+            });
+        });
+    }
+
+   
+    
+
+    // Print the cart
+    document.getElementById('printBtn').addEventListener('click', () => {
+        window.print();
+    });    cart1.forEach((item) =>{
+    
+        console.log(item.items)
+        updateCart(item.items);
+        item.items.forEach(item2 =>{
+            console.log(item2)
+            
+        })
+    })
+
+   // const main = document.querySelector(".main")
+   // const btn = document.querySelector('.productId')
+   // btn.addEventListener('click' , () =>{
+   //     main.style.display = 'block'
+   // })
+
+        
+});
+</script>
+
+
+
+
+

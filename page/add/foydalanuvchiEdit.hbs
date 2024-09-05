@@ -1,0 +1,42 @@
+<div class="container mt-2">
+  {{!-- <div class="row">
+    <div class="col-lg-6 mx-auto shadow rounded p-3"> --}}
+        
+    <h2 style="color: #858796; text-align:center">Foydalanuvchini tahrirlash</h2>
+  
+    <form action="/qushish/edit" method="POST">
+      <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label" style="color: #858796;">Login</label>
+        <input
+            value="{{foydalanuvchi.login}}"
+          type="text"
+          class="form-control"
+          id="exampleFormControlInput1"
+          placeholder="Login"
+          name="login"
+          required
+          readonly
+          style="color: #858796;"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="exampleFormControlInput2" class="form-label" style="color: #858796;">Parol</label>
+        <input
+          type="password"
+          class="form-control"
+          id="exampleFormControlInput2"
+          placeholder="Parol"
+          name="parol"
+          style="color: #858796;"
+        />
+      </div>
+      <input type="hidden" name="id" value="{{foydalanuvchi.id}}">
+      <button class="btn btn-primary">Saqlash</button>
+      </form>
+      <form action="/qushish/delete" method="POST">
+        <input type="hidden" name="id" value="{{foydalanuvchi.id}}">
+        <button class="btn btn-danger my-4">O'chirish</button>
+      </form>
+    {{!-- </div>
+  </div> --}}
+</div>

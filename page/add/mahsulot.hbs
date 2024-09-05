@@ -1,0 +1,115 @@
+<form action="/mahsulot/add" method="POST" enctype="multipart/form-data" class="mb-5">
+    <h2 class="text-center" style="color: #858796;" >Mahsulot qo'shish</h2>
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label" style="color: #858796;">Nomi</label>
+    <input name="nomi" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" style="color: #858796;" required>
+   
+  </div>
+  
+  <div class="mb-3">
+   <label for="summernote" class="form-label" style="color: #858796;">Turi</label>
+    <input type="text" name="turi" type="text" class="form-control" id="exampleInputEmail2" aria-describedby="emailHelp" style="color: #858796;" >
+    
+  </div>
+ 
+  <div class="mb-3">
+   <label for="exampleInputEmail3" class="form-label" style="color: #858796;">Narxi</label>
+    <input name="narxi" type="number" class="form-control" id="exampleInputEmail3" aria-describedby="emailHelp" required style="color: #858796;">
+  
+  </div>
+  
+   <div class="mb-3">
+   <label for="exampleInputImage" class="form-label" style="color: #858796;">Rasmi</label>
+    <input name="img"  type="file" class="form-control" id="fileInput" aria-describedby="emailHelp" accept="image/*" onchange="validateImageFile(this)" style="color: #858796;">
+    
+  </div>
+
+    
+     <select name="category" id="" required style="color: #858796;">
+      <option disabled selected>Category tanlang</option>
+      {{#each category}}
+        <Option value="{{_id}}">{{nomi}}</Option>
+      {{/each}}
+   </select>
+  <button type="submit" class="btn btn-primary">Saqlash</button>
+</form>
+
+
+
+
+
+
+
+
+    <table class="table table-hover" id="product-list" >
+  <thead>
+    <tr>
+      <th scope="col" style="color: #858796;" >№</th>
+      <th scope="col" style="color: #858796;" >Nomi</th>
+      <th scope="col" style="color: #858796;" >Narxlari</th>
+      <th scope="col"style="color: #858796;"  >Rasmi</th>
+
+     
+     
+    </tr>
+  </thead>
+  <tbody >
+    {{#each mahsulot}}
+    <tr data-category="{{this.category.nomi}}" >
+      <th scope="row" style="color: #858796;" >{{incr @index}}</th>
+      <td style="color: #858796;" >{{this.nomi}}</td>
+      <td style="color: #858796;" >{{this.narxi}}</td>
+      <td><img src="../../images/cameralar/{{this.img}}" style="width: 100px;" alt=""></td>
+      <td style="color: #858796;" >{{this.category.nomi}}</td>
+    <td><a href="/mahsulot/{{id}}" class="btn btn-primary">Tahrirlash</a></td>
+      
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+{{!-- <ul id="product-list">
+        {{#each mahsulot}}
+            <li data-category="{{this.category.nomi}}">
+                <h3>{{this.nomi}}</h3>
+                <p>Type: {{this.turi}}</p>
+                <p>Price: ${{this.narxi}}</p>
+                <img src="/images/{{this.img}}" alt="{{this.nomi}}" style="max-width: 200px;">
+            </li>
+        {{/each}}
+    </ul> --}}
+
+
+
+<form id="filter-form">
+        <label for="category">Filter by category:</label>
+        <select name="category" id="category">
+            <option value="">All</option>
+            {{#each category}}
+                <option value="{{this.nomi}}">{{this.nomi}}</option>
+            {{/each}}
+        </select>
+    </form>
+<style>
+        .hidden {
+            display: none;
+        }
+    </style>
+<script>
+        document.getElementById('category').addEventListener('change', function() {
+            let selectedCategory = this.value;
+            let products = document.querySelectorAll('#product-list tr');
+            console.log(products)
+            products.forEach(function(product) {
+                if (selectedCategory === '' || product.getAttribute('data-category') === selectedCategory) {
+                    product.classList.remove('hidden');
+                } else {
+                    product.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+
+
+
+
+
