@@ -17,6 +17,11 @@
     <input name="narxi" type="number" class="form-control" id="exampleInputEmail3" aria-describedby="emailHelp" required style="color: #858796;">
   
   </div>
+  <div class="mb-3">
+   <label for="exampleInputEmail4" class="form-label" style="color: #858796;">Soni</label>
+    <input name="soni" type="number" class="form-control" id="exampleInputEmail4" aria-describedby="emailHelp" required style="color: #858796;">
+  
+  </div>
   
    <div class="mb-3">
    <label for="exampleInputImage" class="form-label" style="color: #858796;">Rasmi</label>
@@ -47,7 +52,9 @@
       <th scope="col" style="color: #858796;" >№</th>
       <th scope="col" style="color: #858796;" >Nomi</th>
       <th scope="col" style="color: #858796;" >Narxlari</th>
-      <th scope="col"style="color: #858796;"  >Rasmi</th>
+      <th scope="col"style="color: #858796;" >Rasmi</th>
+      {{!-- <th scope="col"style="color: #858796;" >Tahrirlash</th> --}}
+      
 
      
      
@@ -60,7 +67,7 @@
       <td style="color: #858796;" >{{this.nomi}}</td>
       <td style="color: #858796;" >{{this.narxi}}</td>
       <td><img src="../../images/cameralar/{{this.img}}" style="width: 100px;" alt=""></td>
-      <td style="color: #858796;" >{{this.category.nomi}}</td>
+      {{!-- <td style="color: #858796;" >{{this.category.nomi}}</td> --}}
     <td><a href="/mahsulot/{{id}}" class="btn btn-primary">Tahrirlash</a></td>
       
     </tr>

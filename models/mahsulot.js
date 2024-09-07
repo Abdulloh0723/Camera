@@ -12,6 +12,10 @@ const {model, Schema} = require("mongoose");
         type:String,
         required:true
     },
+    soni:{
+        type:String,
+        required:true
+    },
     img:{
         type:String,
         required:true

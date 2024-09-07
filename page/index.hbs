@@ -432,10 +432,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     .hidden {
         display: none;
     }
+
+    
     
 </style>
 
-<div class="container main">
+<div class="main">
     <div class="filter mt-3 mb-3"></div>
 <div id="table">
     <table class="table1 table table-hover" >
@@ -444,19 +446,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <th>Rasmi</th>
                     <th>Narxi</th>
                     <th>Soni</th>
-                    <th>Jami</th>
-                    <th>O'chirish</th>
+                    <th>Umumiy</th>
+
+                    
         </thead>
 
      <tbody id="cartTableBody"></tbody> 
        
     </table>
 </div>
-    <div id="cartModal" >
+    <div id="cartModal d-flex " >
         <h2>Tovarlar</h2>
         <div id="cartItems"></div>
         <p class="mt-2"> <b>Umumiy narx:</b> <span id="totalPrice">0</span> so'm</p>
+          <button class="btn btn-success" style="margin-left:74%">Sotib olish</button>
         <button id="printBtn" class="btn btn-primary">Chop etish</button>
+      
+        
+        
         
     </div>
 </div>
@@ -564,7 +571,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <td> <form action="/cart/update" method="POST" style="display:inline;">
                 <input type="hidden" name="productId" value="${item3.product._id}">
                 <input type="hidden" name="action" value="decrement">
-                <button type="submit" class="minus btn btn-danger">-</button>
+                <button type="submit" class="minus btn btn-secondary">-</button>
             </form>
 
             <span class="quantity">${item3.quantity}</span>
@@ -572,14 +579,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             <form action="/cart/update" method="POST" style="display:inline;">
                 <input type="hidden" name="productId" value="${item3.product._id}">
                 <input type="hidden" name="action" value="increment">
-                <button type="submit" class="plus btn btn-success">+</button>
+                <button type="submit" class="plus btn btn-secondary">+</button>
             </form>
       
 </td>
                         <td>${item3.quantity * item3.product.narxi * sum} so'm</td>
                         <td><form action="/cart/delete" method="POST">
                  <input name="productId" type="hidden" value="${item3.product._id}">
-                 <td><button class="btn btn-danger my-4">O'chirish</button></td>
+                 <td><button class="btn btn-danger">O'chirish</button></td>
             </form></td>
                   
                     
@@ -636,6 +643,28 @@ document.addEventListener('DOMContentLoaded', async () => {
    // btn.addEventListener('click' , () =>{
    //     main.style.display = 'block'
    // })
+
+   document.querySelector('.btn-success').addEventListener('click', async () => {
+    try {
+        const response = await fetch('/cart/purchase', {
+            method: 'POST'
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            
+            // Clear the cart table on the front end
+            document.getElementById('cartTableBody').innerHTML = '';
+            document.getElementById('totalPrice').innerText = '0';
+        } else {
+            const errorData = await response.json();
+            alert(errorData.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while processing your purchase.');
+    }
+});
 
         
 });

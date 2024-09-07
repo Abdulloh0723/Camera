@@ -26,13 +26,13 @@ router.get('/'  , verification , async(req , res)=>{
 })
 router.post('/add' , fileCame , verification , async(req ,  res ) =>{
     try {
-        const {nomi , turi , narxi, category } = req.body
+        const {nomi , turi , narxi, soni , category } = req.body
         // console.log(req.body)
-        const mahsulot = new Mahsulot({nomi , turi , narxi, img: req.file.filename , category })
+        const mahsulot = new Mahsulot({nomi , turi ,  narxi, soni , img: req.file.filename , category })
     
         await mahsulot.save();
         // console.log(mahsulot);
-        // console.log(req.body);
+        console.log(req.body);
         res.redirect("/mahsulot");
     } catch (error) {   
         console.log(error); 

@@ -116,4 +116,36 @@ router.post("/delete", async (req, res) => {
     }
 });
 
+// In your routes (assuming Express.js)
+router.post('/purchase', async (req, res) => {
+    try {
+        console.log(req.body);
+        
+        const cart = await Cart.findOne({ userId: req._id });
+        if (!cart) {
+            return res.status(400).json({ message: "Cart is empty" });
+        }
+        
+        // Loop through each item in the cart and update product quantities
+        for (let item of cart.items) {
+            const product = await Mahsulot.findById(item.product._id);
+            if (product.soni < item.quantity) {
+                return res.status(400).json({ message: `Not enough stock for ${product.nomi}` });
+            }
+            product.soni -= item.quantity; // Update the product quantity
+            await product.save();
+        }
+
+        // Clear the cart after the purchase
+        cart.items = [];
+        await cart.save();
+
+        // return res.json({ message: "Purchase successful", cart });
+    } catch (error) {
+        console.error(error);
+        // res.status(500).json({ message: "Something went wrong" });
+    }
+});
+
+
 module.exports = router;
