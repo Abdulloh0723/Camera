@@ -558,7 +558,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       
             const item = cart
             item.forEach((item3) =>{
-               console.log(item3)
+               
                 totalPrice += item3.product.narxi * item3.quantity;
              const productElement1 = document.createElement('tr');
              productElement1.classList.add('child');
@@ -586,7 +586,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <td>${item3.quantity * item3.product.narxi * sum} so'm</td>
                         <td><form action="/cart/delete" method="POST">
                  <input name="productId" type="hidden" value="${item3.product._id}">
-                 <td><button class="btn btn-danger">O'chirish</button></td>
+                 <td><button type="submit" class="btn btn-danger">O'chirish</button></td>
             </form></td>
                   
                     
@@ -630,10 +630,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.print();
     });    cart1.forEach((item) =>{
     
-        console.log(item.items)
+        
         updateCart(item.items);
         item.items.forEach(item2 =>{
-            console.log(item2)
+           
             
         })
     })

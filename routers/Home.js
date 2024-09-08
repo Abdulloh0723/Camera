@@ -11,7 +11,7 @@ router.get('/' , verification , async(req , res)=>{
         const category = await Category.find()
         const cart = await Cart.find().populate("items.product")
         // console.log(mahsulot);
-        console.log(cart)
+        
         // const menu = await Menu.find();
         const user_auth = req.session.tizimgaKirildi;
         res.render('index' , {user_auth , mahsulot , category ,cart ,   IsHome:true} )

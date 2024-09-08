@@ -79,14 +79,25 @@ app.get('/api/category', async (req, res) => {
 app.get('/api/cart', async (req, res) => {
   try {
       const cart = await Cart.find().populate("items.product")
+    console.log(cart)
       res.json(cart);
-      // console.log(cart)
+      
   } catch (error) {
       res.status(500).send(error);
   }
 });
 
 
+
+
+app.get('/api/cart-raw', async (req, res) => {
+  try {
+    const cart = await Cart.find().populate("items.product"); // Populate qilinmagan
+    res.json(cart);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
 
 
 app.engine("hbs" , hbs.engine);
