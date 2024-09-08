@@ -132,7 +132,7 @@ router.post('/purchase', async (req, res) => {
         for (let item of cart.items) {
             const product = await Mahsulot.findById(item.product._id);
             if (product.soni < item.quantity) {
-                return res.status(400).json({ message: `Not enough stock for ${product.nomi}` });
+                return res.status(400).json({ message: `Maxsulot tugap qolgan${product.nomi}` });
             }
             product.soni -= item.quantity; // Update the product quantity
             await product.save();
