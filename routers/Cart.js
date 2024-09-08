@@ -90,7 +90,7 @@ router.post('/update', async (req, res) => {
 router.post("/delete", async (req, res) => {
     try {
         const { productId } = req.body;
-        console.log(productId)
+        console.log(productId)  
         let cart = await Cart.findOne();
         // console.log(featureId);
         if (cart) {
@@ -116,12 +116,14 @@ router.post("/delete", async (req, res) => {
     }
 });
 
-// In your routes (assuming Express.js)
+
+
+
 router.post('/purchase', async (req, res) => {
     try {
         console.log(req.body);
         
-        const cart = await Cart.findOne({ userId: req._id });
+    let cart = await Cart.findOne({ userId: req._id });
         if (!cart) {
             return res.status(400).json({ message: "Cart is empty" });
         }

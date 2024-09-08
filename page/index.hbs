@@ -585,9 +585,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 </td>
                         <td>${item3.quantity * item3.product.narxi * sum} so'm</td>
                         <td><form action="/cart/delete" method="POST">
-                 <input name="productId" type="hidden" value="${item3.product._id}">
-                 <td><button type="submit" class="btn btn-danger">O'chirish</button></td>
-            </form></td>
+                          <input name="productId" type="hidden" value="${item3.product._id}">
+                          <button class="btn btn-danger">O'chirish</button>
+                     </form>
+                     
+                     </td>
                   
                     
             `;
